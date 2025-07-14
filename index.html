@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venezuela - Combobox Dependientes</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* To include padding and border in the element's total width and height */
+        }
+        select:disabled {
+            background-color: #eee;
+            cursor: not-allowed;
+        }
+        h1 { text-align: center; color: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Localidades de Venezuela</h1>
+
+    <div>
+        <label for="selectEstado">Estado:</label>
+        <select id="selectEstado" name="estado">
+            <option value="">-- Seleccione un Estado --</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="selectCiudad">Ciudad:</label>
+        <select id="selectCiudad" name="ciudad" disabled>
+            <option value="">-- Seleccione una Ciudad --</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="selectMunicipio">Municipio:</label>
+        <select id="selectMunicipio" name="municipio" disabled>
+            <option value="">-- Seleccione un Municipio --</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="selectParroquia">Parroquia:</label>
+        <select id="selectParroquia" name="parroquia" disabled>
+            <option value="">-- Seleccione una Parroquia --</option>
+        </select>
+    </div>
+</div>
+
+<script src="venezuela-data.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectEstado = document.getElementById('selectEstado');
+        const selectCiudad = document.getElementById('selectCiudad');
+        const selectMunicipio = document.getElementById('selectMunicipio');
+        const selectParroquia = document.getElementById('selectParroquia');
+
+        // Populate Estados
+        venezuelaData.estados.forEach(estado => {
+            const option = new Option(estado.estado, estado.id_estado);
+            selectEstado.add(option);
+        });
+
+        // Event listener for Estado change
+        selectEstado.addEventListener('change', function() {
+            const selectedEstadoId = parseInt(this.value);
+
+            // Reset and disable dependent dropdowns
+            resetDropdown(selectCiudad, '-- Seleccione una Ciudad --');
+            selectCiudad.disabled = true;
+            resetDropdown(selectMunicipio, '-- Seleccione un Municipio --');
+            selectMunicipio.disabled = true;
+            resetDropdown(selectParroquia, '-- Seleccione una Parroquia --');
+            selectParroquia.disabled = true;
+
+            if (selectedEstadoId) {
+                // Populate Ciudades
+                const ciudadesFiltradas = venezuelaData.ciudades.filter(c => c.id_estado === selectedEstadoId);
+                populateDropdown(selectCiudad, ciudadesFiltradas, 'ciudad', 'id_ciudad', '-- Seleccione una Ciudad --');
+                selectCiudad.disabled = false;
+
+                // Populate Municipios (dependent on Estado as per schema)
+                const municipiosFiltrados = venezuelaData.municipios.filter(m => m.id_estado === selectedEstadoId);
+                populateDropdown(selectMunicipio, municipiosFiltrados, 'municipio', 'id_municipio', '-- Seleccione un Municipio --');
+                selectMunicipio.disabled = false;
+            }
+        });
+
+        // Event listener for Municipio change (to populate Parroquias)
+        selectMunicipio.addEventListener('change', function() {
+            const selectedMunicipioId = parseInt(this.value);
+
+            resetDropdown(selectParroquia, '-- Seleccione una Parroquia --');
+            selectParroquia.disabled = true;
+
+            if (selectedMunicipioId) {
+                const parroquiasFiltradas = venezuelaData.parroquias.filter(p => p.id_municipio === selectedMunicipioId);
+                populateDropdown(selectParroquia, parroquiasFiltradas, 'parroquia', 'id_parroquia', '-- Seleccione una Parroquia --');
+                selectParroquia.disabled = false;
+            }
+        });
+
+        // Helper function to populate a dropdown
+        function populateDropdown(selectElement, items, textKey, valueKey, defaultOptionText) {
+            resetDropdown(selectElement, defaultOptionText); // Clear previous items
+            items.sort((a, b) => a[textKey].localeCompare(b[textKey])).forEach(item => {
+                const option = new Option(item[textKey], item[valueKey]);
+                selectElement.add(option);
+            });
+        }
+
+        // Helper function to reset a dropdown
+        function resetDropdown(selectElement, defaultOptionText) {
+            selectElement.innerHTML = ''; // Clear existing options
+            const defaultOption = new Option(defaultOptionText, '');
+            selectElement.add(defaultOption);
+        }
+
+    });
+</script>
+
+</body>
+</html>
