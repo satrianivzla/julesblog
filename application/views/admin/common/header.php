@@ -5,36 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($title) ? html_escape($title) . ' - Admin' : 'Admin Panel'; ?></title>
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc4/dist/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0-rc4/dist/css/adminlte.min.css">
 
-    <!-- DataTables CSS -->
-    <link href="<?php echo base_url('assets/plugins/datatables/jquery.dataTables.min.css'); ?>" rel="stylesheet">
-
-    <!-- Custom Admin CSS -->
-    <style>
-        body {
-            display: flex;
-            min-height: 100vh;
-            flex-direction: column;
-        }
-        .main-content {
-            flex: 1;
-        }
-        .sidebar {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .footer {
-            background-color: #f8f9fa;
-            padding: 10px 0;
-            text-align: center;
-        }
-    </style>
 </head>
-<body>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="<?php echo site_url('admin/dashboard'); // A future dashboard link ?>">JulesBlog Admin</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,11 +55,25 @@
     </div>
 </nav>
 
-<div class="container-fluid main-content">
-    <div class="row">
-        <!-- Main content will be loaded here -->
-        <main class="col-md-12 ms-sm-auto col-lg-12 px-md-4 py-4">
+<?php $this->load->view('admin/common/sidebar'); ?>
 
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0"><?php echo isset($title) ? $title : ''; ?></h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
             <?php if ($this->session->flashdata('message')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <?php echo $this->session->flashdata('message'); ?>

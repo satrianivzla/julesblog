@@ -7,6 +7,7 @@ class Posts extends MY_Controller {
     {
         parent::__construct();
         $this->load->model('post_model');
+        $this->load->model('stat_model');
     }
 
     public function view($slug = NULL)
@@ -16,6 +17,10 @@ class Posts extends MY_Controller {
         if (empty($data['post']))
         {
             show_404();
+        }
+        else
+        {
+            $this->stat_model->increment_view($data['post']['id']);
         }
 
         $data['title'] = $data['post']['seo_title'] ? $data['post']['seo_title'] : $data['post']['title'];

@@ -37,6 +37,7 @@ CREATE TABLE `posts` (
   `status` enum('published','draft') NOT NULL DEFAULT 'draft',
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL,
+  `views` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug` (`slug`),
   KEY `author_id` (`author_id`),

@@ -26,6 +26,10 @@
                     <a class="nav-link" href="<?php echo site_url(); ?>">Home</a>
                 </li>
             </ul>
+            <form class="d-flex" action="<?php echo site_url('search'); ?>" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
             <ul class="navbar-nav">
                 <?php if (isset($user)): ?>
                     <li class="nav-item dropdown">
