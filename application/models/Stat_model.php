@@ -14,4 +14,12 @@ class Stat_model extends CI_Model {
         $this->db->where('id', $post_id);
         $this->db->update('posts');
     }
+
+    public function get_post_views($post_id)
+    {
+        $this->db->select('views');
+        $this->db->where('id', $post_id);
+        $query = $this->db->get('posts');
+        return $query->row()->views;
+    }
 }

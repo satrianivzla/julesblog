@@ -13,6 +13,11 @@ class Post_model extends CI_Model {
         return $this->db->get_where('posts', array('slug' => $slug))->row_array();
     }
 
+    public function get_post($id)
+    {
+        return $this->db->get_where('posts', array('id' => $id))->row_array();
+    }
+
     public function get_all_posts()
     {
         return $this->db->get('posts')->result_array();
@@ -80,12 +85,45 @@ class Post_model extends CI_Model {
     {
         $this->db->delete('post_tags', array('post_id' => $post_id));
         if (!empty($tags)) {
+            $this->load->model('tag_model');
+            $tag_ids = [];
+            foreach ($tags as $tag_name) {
+                $tag = $this->tag_model->get_tag_by_name($tag_name);
+                if ($tag) {
+                    $tag_ids[] = $tag['id'];
+                } else {
+                    $tag_ids[] = $this->tag_model->create_tag(['name' => $tag_name, 'slug' => url_title($tag_name, 'dash', TRUE)]);
+                }
+            }
             $batch = [];
-            foreach ($tags as $tag_id) {
+            foreach ($tag_ids as $tag_id) {
                 $batch[] = ['post_id' => $post_id, 'tag_id' => $tag_id];
             }
             $this->db->insert_batch('post_tags', $batch);
         }
+    }
+
+    public function get_posts_by_category($category_id)
+    {
+        $this->db->select('posts.*');
+        $this->db->from('posts');
+        $this->db->join('post_categories', 'post_categories.post_id = posts.id');
+        $this->db->where('post_categories.category_id', $category_id);
+        return $this->db->get()->result_array();
+    }
+
+    public function get_posts_by_tag($tag_id)
+    {
+        $this->db->select('posts.*');
+        $this->db->from('posts');
+        $this->db->join('post_tags', 'post_tags.post_id = posts.id');
+        $this->db->where('post_tags.tag_id', $tag_id);
+        return $this->db->get()->result_array();
+    }
+
+    public function get_posts_by_author($author_id)
+    {
+        return $this->db->get_where('posts', array('author_id' => $author_id))->result_array();
     }
 
     public function search_posts($query)
@@ -93,5 +131,50 @@ class Post_model extends CI_Model {
         $this->db->like('title', $query);
         $this->db->or_like('content', $query);
         return $this->db->get('posts')->result_array();
+    }
+
+    public function count_posts_by_category($category_id)
+    {
+        $this->db->join('post_categories', 'post_categories.post_id = posts.id');
+        $this->db->where('post_categories.category_id', $category_id);
+        return $this->db->count_all_results('posts');
+    }
+
+    public function get_paginated_posts_by_category($category_id, $limit, $start)
+    {
+        $this->db->limit($limit, $start);
+        $this->db->select('posts.*');
+        $this->db->from('posts');
+        $this->db->join('post_categories', 'post_categories.post_id = posts.id');
+        $this->db->where('post_categories.category_id', $category_id);
+        return $this->db->get()->result_array();
+    }
+
+    public function count_posts_by_tag($tag_id)
+    {
+        $this->db->join('post_tags', 'post_tags.post_id = posts.id');
+        $this->db->where('post_tags.tag_id', $tag_id);
+        return $this->db->count_all_results('posts');
+    }
+
+    public function get_paginated_posts_by_tag($tag_id, $limit, $start)
+    {
+        $this->db->limit($limit, $start);
+        $this->db->select('posts.*');
+        $this->db->from('posts');
+        $this->db->join('post_tags', 'post_tags.post_id = posts.id');
+        $this->db->where('post_tags.tag_id', $tag_id);
+        return $this->db->get()->result_array();
+    }
+
+    public function count_posts_by_author($author_id)
+    {
+        return $this->db->where('author_id', $author_id)->count_all_results('posts');
+    }
+
+    public function get_paginated_posts_by_author($author_id, $limit, $start)
+    {
+        $this->db->limit($limit, $start);
+        return $this->db->get_where('posts', array('author_id' => $author_id))->result_array();
     }
 }

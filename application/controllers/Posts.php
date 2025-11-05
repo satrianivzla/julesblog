@@ -21,6 +21,7 @@ class Posts extends MY_Controller {
         else
         {
             $this->stat_model->increment_view($data['post']['id']);
+            $data['views'] = $this->stat_model->get_post_views($data['post']['id']);
         }
 
         $data['title'] = $data['post']['seo_title'] ? $data['post']['seo_title'] : $data['post']['title'];
