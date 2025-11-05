@@ -24,7 +24,7 @@ class MY_Controller extends CI_Controller {
 
         // Load language files if needed (e.g., for form validation errors)
         // Note: Ion Auth handles its own language loading.
-        // $this->lang->load('site', $this->language == 'es' ? 'spanish' : 'english');
+        $this->lang->load('general', $this->language == 'es' ? 'spanish' : 'english');
 
         // Make the language available to all views
         $this->load->vars(['current_lang' => $this->language]);

@@ -8,6 +8,7 @@ class Posts extends CI_Controller {
         parent::__construct();
         // Load necessary models, libraries, helpers
         $this->load->model('post_model');
+        $this->load->model('artist_model');
         $this->load->model('audit_model');
         $this->load->library('form_validation');
         // Autoloading should handle ion_auth, database, session, url, etc.
@@ -43,6 +44,7 @@ class Posts extends CI_Controller {
         $this->load->model('tag_model');
         $data['categories'] = $this->category_model->get_all_categories();
         $data['tags'] = $this->tag_model->get_all_tags();
+        $data['artists'] = $this->artist_model->get_all_artists();
 
         $this->load->view('admin/common/header', $data);
         $this->load->view('admin/posts/form', $data);
@@ -64,6 +66,7 @@ class Posts extends CI_Controller {
 
             $post_data = [
                 'author_id' => $this->ion_auth->user()->row()->id,
+                'artist_id' => $this->input->post('artist_id'),
                 'title_en' => $this->input->post('title_en'),
                 'title_es' => $this->input->post('title_es'),
                 'slug' => $slug,
@@ -99,7 +102,6 @@ class Posts extends CI_Controller {
                 $config['upload_path'] = $upload_path;
                 $config['file_name'] = $new_filename; // Set the filename before upload
                 $config['allowed_types'] = 'gif|jpg|jpeg|png';
-                $config['encrypt_name'] = TRUE;
 
                 $this->load->library('upload', $config);
 
@@ -110,7 +112,7 @@ class Posts extends CI_Controller {
                     $this->load->library('image_lib');
                     $img_config['image_library'] = 'gd2';
                     $img_config['source_image'] = $upload_data['full_path'];
-                    $img_config['new_image'] = $upload_path . $upload_data['raw_name'] . '.webp';
+                    $img_config['new_image'] = $upload_path . $new_filename . '.webp';
                     $img_config['create_thumb'] = FALSE;
                     $img_config['maintain_ratio'] = TRUE;
                     $img_config['quality'] = '80%';
@@ -118,7 +120,7 @@ class Posts extends CI_Controller {
                     $this->image_lib->initialize($img_config);
 
                     if ($this->image_lib->convert('webp')) {
-                         $post_data['featured_image'] = $upload_data['raw_name'] . '.webp';
+                         $post_data['featured_image'] = $new_filename . '.webp';
                          unlink($upload_data['full_path']); // Delete original
                     } else {
                          $this->session->set_flashdata('error', 'WebP conversion failed: ' . $this->image_lib->display_errors());
@@ -165,6 +167,7 @@ class Posts extends CI_Controller {
 
         $data['categories'] = $this->category_model->get_all_categories();
         $data['tags'] = $this->tag_model->get_all_tags();
+        $data['artists'] = $this->artist_model->get_all_artists();
         $data['post_categories'] = $this->post_model->get_post_categories($id);
         $data['post_tags'] = $this->post_model->get_post_tags($id);
 
@@ -187,6 +190,7 @@ class Posts extends CI_Controller {
             $slug = url_title($this->input->post('title_en'), 'dash', TRUE);
 
             $post_data = [
+                'artist_id' => $this->input->post('artist_id'),
                 'title_en' => $this->input->post('title_en'),
                 'title_es' => $this->input->post('title_es'),
                 'slug' => $slug,
@@ -221,7 +225,6 @@ class Posts extends CI_Controller {
                 $config['upload_path'] = $upload_path;
                 $config['file_name'] = $new_filename;
                 $config['allowed_types'] = 'gif|jpg|jpeg|png';
-                $config['encrypt_name'] = TRUE;
 
                 $this->load->library('upload', $config);
 
@@ -231,15 +234,15 @@ class Posts extends CI_Controller {
                     $this->load->library('image_lib');
                     $img_config['image_library'] = 'gd2';
                     $img_config['source_image'] = $upload_data['full_path'];
-                    $img_config['new_image'] = $upload_path . $upload_data['raw_name'] . '.webp';
+                    $img_config['new_image'] = $upload_path . $new_filename . '.webp';
                     $img_config['create_thumb'] = FALSE;
                     $img_config['maintain_ratio'] = TRUE;
                     $img_config['quality'] = '80%';
 
-                    $this->image_lib->initialize($img_config);
+                    $this.image_lib->initialize($img_config);
 
                     if ($this->image_lib->convert('webp')) {
-                         $post_data['featured_image'] = $upload_data['raw_name'] . '.webp';
+                         $post_data['featured_image'] = $new_filename . '.webp';
                          unlink($upload_data['full_path']);
                     } else {
                          $this->session->set_flashdata('error', 'WebP conversion failed: ' . $this->image_lib->display_errors());

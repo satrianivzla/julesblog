@@ -71,6 +71,17 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="artist_id">Artist</label>
+                        <select name="artist_id" id="artist_id" class="form-control">
+                            <option value="">Select Artist</option>
+                            <?php foreach ($artists as $artist): ?>
+                                <option value="<?php echo $artist['id']; ?>" <?php echo (isset($post) && $post['artist_id'] == $artist['id']) ? 'selected' : ''; ?>>
+                                    <?php echo $artist['name']; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="tags">Tags (comma-separated)</label>
                         <input type="text" name="tags" id="tags" class="form-control" value="<?php echo isset($post_tags) ? implode(', ', $post_tags) : ''; ?>">
                     </div>

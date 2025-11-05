@@ -35,6 +35,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="<?php echo site_url('admin/artists'); ?>" class="nav-link">
+                        <i class="nav-icon fas fa-user-tie"></i>
+                        <p>Artists</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="<?php echo site_url('auth'); ?>" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Users</p>
