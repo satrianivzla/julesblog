@@ -65,12 +65,12 @@ $config['join']['groups'] = 'group_id';
  | salt_prefix: Used for bcrypt. Versions of PHP before 5.3.7 only support "$2a$" as the salt prefix
  | Versions 5.3.7 or greater should use the default of "$2y$".
  */
-$config['hash_method']    = 'bcrypt';	// sha1 or bcrypt, bcrypt is STRONGLY recommended
-$config['default_rounds'] = 8;		// This does not apply if random_rounds is set to true
-$config['random_rounds']  = FALSE;
-$config['min_rounds']     = 5;
-$config['max_rounds']     = 9;
-$config['salt_prefix']    = '$2y$';
+$config['hash_method']    = 'argon2id';	// sha1, bcrypt, argon2, or argon2id. argon2id is recommended
+$config['argon2_params'] = [
+    'memory_cost' => 1024,
+    'time_cost'   => 2,
+    'threads'     => 2,
+];
 
 /*
  | -------------------------------------------------------------------------

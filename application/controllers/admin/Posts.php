@@ -239,7 +239,7 @@ class Posts extends CI_Controller {
                     $img_config['maintain_ratio'] = TRUE;
                     $img_config['quality'] = '80%';
 
-                    $this.image_lib->initialize($img_config);
+                    $this->image_lib->initialize($img_config);
 
                     if ($this->image_lib->convert('webp')) {
                          $post_data['featured_image'] = $new_filename . '.webp';
