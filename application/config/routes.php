@@ -13,7 +13,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 |	example.com/class/method/id/
 |
-| In some instances, however, you may want to change this relationship
+| In some instances, however, you may want to remap this relationship
 | so that a different class/function is called than the one
 | corresponding to the URL.
 |
@@ -52,27 +52,3 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-
-// Language-prefixed routes
-$route['(en|es)/(:any)'] = '$2';
-$route['(en|es)'] = $route['default_controller'];
-
-
-/*
-| -------------------------------------------------------------------------
-| Custom Routes for Ion Auth and Admin
-| -------------------------------------------------------------------------
-*/
-$route['auth'] = 'auth';
-$route['auth/(:any)'] = 'auth/$1';
-$route['admin'] = 'admin/dashboard'; // Default admin route
-$route['admin/dashboard'] = 'admin/dashboard';
-$route['admin/(:any)'] = 'admin/$1';
-$route['admin/(:any)/(:any)'] = 'admin/$1/$2';
-
-// Sitemap routes
-$route['sitemap\.xml'] = 'sitemap';
-$route['sitemap/posts\.xml'] = 'sitemap/posts';
-$route['sitemap/categories\.xml'] = 'sitemap/categories';
-$route['sitemap/tags\.xml'] = 'sitemap/tags';
-$route['sitemap/images\.xml'] = 'sitemap/images';
